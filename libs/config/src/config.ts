@@ -11,7 +11,19 @@ interface Config {
     port: number;
     name: string;
   };
-  common: object;
+  common: {
+    database: {
+      type: string;
+      host: string;
+      port: number;
+      username: string;
+      password: string;
+      database: string;
+      entities: string[];
+      ssl: boolean;
+      synchronize: boolean;
+    };
+  };
 }
 
 const config = yaml.load(readFileSync(join(__dirname, '../../../env.yaml'), 'utf8')) as Config;
