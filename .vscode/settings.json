@@ -10,13 +10,14 @@
     "**/README.md": true,
     "**/tsconfig.build.json": true,
     "**/.eslintrc.js": true,
-    "**/nest-cli.json": true,
+    "**/nest-cli.json": false,
     "**/.prettierrc": true,
     "**/pnpm-lock.yaml": true,
     "**/tsconfig.app.json": true,
     "**/node_modules": true,
     "**/.gitignore": true,
-    "**/.vscode": true
+    "**/.vscode": true,
+    "**/dist": true
   },
   "explorerExclude.backup": {}
 }
