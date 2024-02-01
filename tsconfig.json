@@ -19,6 +19,8 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@ggcsgo/config": ["libs/config/src/index.ts"],
+      "@ggcsgo/entities": ["libs/entity/src/index.ts"],
+      "@ggcsgo/decorators": ["libs/decorators/src/index.ts"],
     },
   },
 }

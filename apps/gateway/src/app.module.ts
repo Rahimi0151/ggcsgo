@@ -5,6 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { getGatewayConfig } from '@ggcsgo/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -15,6 +17,10 @@ import { databaseConfig } from './config/database';
     }),
 
     TypeOrmModule.forRootAsync(databaseConfig),
+
+    AuthModule,
+
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
