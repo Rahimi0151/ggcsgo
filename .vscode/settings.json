@@ -1,0 +1,22 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/tsconfig.json": true,
+    "**/README.md": true,
+    "**/tsconfig.build.json": true,
+    "**/.eslintrc.js": true,
+    "**/nest-cli.json": true,
+    "**/.prettierrc": true,
+    "**/pnpm-lock.yaml": true,
+    "**/tsconfig.app.json": true,
+    "**/node_modules": true,
+    "**/.gitignore": true,
+    "**/.vscode": true
+  },
+  "explorerExclude.backup": {}
+}
