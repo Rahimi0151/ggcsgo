@@ -1,12 +1,9 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { join } from 'path';
 import { User } from '../user/entities/user.entity';
 
 export default class TypeOrmConfig {
   static getOrmConfig(configService: ConfigService): TypeOrmModuleOptions {
-    console.log([join(__dirname, '**', '*.entity{.ts,.js}')]);
-
     return {
       type: 'postgres',
       host: configService.get<string>('database.host'),

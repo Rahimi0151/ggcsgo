@@ -11,6 +11,7 @@ import { SteamStrategy } from './strategies/steam.strategy';
 import { User } from '../user/entities/user.entity';
 import { UserModule } from '../user/user.module';
 import { UserService } from '../user/user.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -26,6 +27,6 @@ import { UserService } from '../user/user.service';
     UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, SteamStrategy],
+  providers: [AuthService, UserService, SteamStrategy, JwtStrategy],
 })
 export class AuthModule {}

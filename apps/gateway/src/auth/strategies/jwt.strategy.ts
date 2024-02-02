@@ -11,16 +11,18 @@ export interface RequestWithJWT extends Request {
 }
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly authService: AuthService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([(req) => req.cookies.jwt]),
+      ignoreExpiration: false,
       secretOrKey: 'your-secret-key',
     });
   }
 
   async validate(payload: any) {
     const user = await this.authService.validateUser(payload);
+
     if (!user) throw new UnauthorizedException();
     return user;
   }

@@ -17,9 +17,10 @@ import * as jwt from 'jsonwebtoken';
 
 const decorator = (data: unknown, context: ExecutionContext): number => {
   const request = context.switchToHttp().getRequest();
+
   try {
-    const decoded = jwt.verify(request.cookies.jwt, process.env.JWT_SECRET);
-    if (typeof decoded === 'object') return decoded.userId;
+    const decoded = jwt.verify(request.cookies.jwt, 'your-secret-key');
+    if (typeof decoded === 'object') return decoded.steamId;
   } catch (err) {
     console.log(err);
     throw new UnauthorizedException('Failed to verify token');

@@ -29,4 +29,8 @@ export class UserService {
   async create(userData: Partial<User>): Promise<User> {
     return this.userRepository.save(userData);
   }
+
+  getProfileBySteamID(userID: string) {
+    return this.userRepository.findOne({ where: { steamId: userID } });
+  }
 }

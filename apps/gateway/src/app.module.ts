@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -15,6 +16,8 @@ import { UserModule } from './user/user.module';
       isGlobal: true,
       load: [getGatewayConfig],
     }),
+
+    PassportModule.register({ defaultStrategy: 'steam' }),
 
     TypeOrmModule.forRootAsync(databaseConfig),
 
