@@ -25,6 +25,6 @@ export class AuthController {
   @ApiBearerAuth()
   steamAuthRedirect(@Req() req: RequestWithJWT, @Res({ passthrough: true }) res: Response) {
     res.cookie('jwt', req.user.jwt, { httpOnly: true });
-    res.redirect(`http://localhost:3000/`);
+    res.redirect(`http://localhost/`);
   }
 }

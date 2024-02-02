@@ -17,7 +17,7 @@ export default function Header() {
         </div>
         <button
           className="bg-blue-900 hover:bg-blue-950 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105"
-          onClick={() => window.open(`${env.apiUrl}/auth/steam`, '_blank')}
+          onClick={() => (window.location.href = `${env.apiUrl}/auth/steam`)}
         >
           Login With Steam
         </button>

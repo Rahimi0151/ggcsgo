@@ -12,8 +12,6 @@ export class SteamStrategy extends PassportStrategy(Strategy, 'steam') {
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
   ) {
-    console.log(configService.get<string>('steam.apiKey'));
-
     super({
       returnURL: 'http://localhost:4000/auth/steam-return',
       realm: 'http://localhost:4000/',
