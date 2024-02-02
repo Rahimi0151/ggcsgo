@@ -27,4 +27,13 @@ export class AuthController {
     res.cookie('jwt', req.user.jwt, { httpOnly: true });
     res.redirect(`http://localhost/`);
   }
+
+  @Get('logout')
+  @ApiOperation({
+    summary: 'Logout the user',
+  })
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('jwt');
+    res.redirect(`http://localhost/`);
+  }
 }
