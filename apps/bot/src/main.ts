@@ -1,17 +1,21 @@
 import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+
+import { INVENTORY_PACKAGE_NAME } from '@ggcsgo/proto';
+
+import { join } from 'path';
+
 import { BotModule } from './bot.module';
-import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(BotModule);
-
-  const configService = app.get(ConfigService);
-
-  const port = configService.get('port');
-  if (!port) throw new Error('Port not found in config');
-
-  await app.listen(port, () => {
-    console.log(`Bot listening on port ${port}`);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(BotModule, {
+    transport: Transport.GRPC,
+    options: {
+      protoPath: join(__dirname, './../../../libs/proto/inventory.proto'),
+      package: INVENTORY_PACKAGE_NAME,
+    },
   });
+
+  await app.listen();
 }
 bootstrap();

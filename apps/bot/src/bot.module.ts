@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { getBotConfig } from '@ggcsgo/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database';
+import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
   imports: [
@@ -15,6 +16,8 @@ import { databaseConfig } from './config/database';
     }),
 
     TypeOrmModule.forRootAsync(databaseConfig),
+
+    InventoryModule,
   ],
   controllers: [BotController],
   providers: [BotService],

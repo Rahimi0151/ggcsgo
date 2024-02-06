@@ -14,10 +14,11 @@
     "**/.prettierrc": true,
     "**/pnpm-lock.yaml": true,
     "**/tsconfig.app.json": false,
-    "**/node_modules": true,
+    "**/node_modules": false,
     "**/.gitignore": true,
     "**/.vscode": true,
-    "**/dist": true
+    "**/dist": false
   },
-  "explorerExclude.backup": {}
+  "explorerExclude.backup": {},
+  "editor.rulers": [100]
 }

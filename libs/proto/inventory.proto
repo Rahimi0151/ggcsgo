@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package inventory;
+
+service InventoryService {
+    rpc getInventory (ShowInventoryRequest) returns (ShowInventoryResponse) {}
+}
+
+message ShowInventoryRequest {
+    string steamID = 1;
+}
+
+message ShowInventoryResponse {
+    repeated Item inventory = 1;
+}
+
+message Item {
+    string assetID = 1;
+    string market_hash_name = 2;
+}

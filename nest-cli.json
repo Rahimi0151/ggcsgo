@@ -5,7 +5,14 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/gateway/tsconfig.app.json"
+    "tsConfigPath": "apps/gateway/tsconfig.app.json",
+    "assets": [
+      {
+        "include": "**/*.proto",
+        "outDir": "/dist/proto"
+      }
+    ],
+    "watchAssets": true
   },
   "monorepo": true,
   "root": "apps/gateway",
@@ -13,10 +20,12 @@
     "gateway": {
       "type": "application",
       "root": "apps/gateway",
-      "entryFile": "main",
-      "sourceRoot": "apps/gateway/src",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/gateway/tsconfig.app.json"
+        "tsConfigPath": "apps/gateway/tsconfig.app.json",
+        "assets": ["../../**/*.proto"],
+        "deleteOutDir": true
       }
     },
     "bot": {

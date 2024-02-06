@@ -8,6 +8,7 @@ import { databaseConfig } from './config/database';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PassportModule } from '@nestjs/passport';
+import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
   imports: [
@@ -24,6 +25,8 @@ import { PassportModule } from '@nestjs/passport';
     AuthModule,
 
     UserModule,
+
+    InventoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
