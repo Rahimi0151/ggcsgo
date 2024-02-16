@@ -23,6 +23,11 @@ interface Config {
       ssl: boolean;
       synchronize: boolean;
     };
+
+    rabbitmq: {
+      URI: string;
+      botQueue: string;
+    };
   };
 }
 

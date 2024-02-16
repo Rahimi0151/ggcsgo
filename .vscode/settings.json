@@ -15,9 +15,13 @@
     "**/pnpm-lock.yaml": true,
     "**/tsconfig.app.json": false,
     "**/node_modules": true,
-    "**/.gitignore": true,
+    "**/.gitignore": false,
     "**/.vscode": true,
     "**/dist": true
   },
-  "explorerExclude.backup": {}
+  "explorerExclude.backup": {},
+  "editor.tokenColorCustomizations": {
+    "comments": "",
+    "textMateRules": []
+  }
 }

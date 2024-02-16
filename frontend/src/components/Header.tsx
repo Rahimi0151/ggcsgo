@@ -35,12 +35,20 @@ export default function Header() {
           </Link>
         </div>
         {isAuthenticated ? (
-          <button
-            className="bg-red-900 hover:bg-red-950 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105"
-            onClick={logout}
-          >
-            Logout
-          </button>
+          <div className="flex">
+            <Link
+              className="bg-purple-900 hover:bg-purple-950 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105"
+              href="/sell"
+            >
+              Sell Your Skins
+            </Link>
+            <button
+              className="bg-red-900 hover:bg-red-950 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105"
+              onClick={logout}
+            >
+              Logout
+            </button>
+          </div>
         ) : (
           <button
             className="bg-blue-900 hover:bg-blue-950 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105"

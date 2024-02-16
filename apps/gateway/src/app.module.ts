@@ -1,13 +1,23 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { getGatewayConfig } from '@ggcsgo/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { databaseConfig } from './config/database';
+import { PassportModule } from '@nestjs/passport';
+import { CacheModule } from '@nestjs/cache-manager';
+
+import { RmqModule, RmqService } from '@ggcsgo/rabbitmq';
+import { getGatewayConfig } from '@ggcsgo/config';
+
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { PassportModule } from '@nestjs/passport';
+import { InventoryModule } from './inventory/inventory.module';
+
+import { AppController } from './app.controller';
+
+import { AppService } from './app.service';
+
+import { redisConfig } from './config/redis';
+import { databaseConfig } from './config/database';
+import { BOT } from '@ggcsgo/rabbitmq/queues';
 
 @Module({
   imports: [
@@ -21,11 +31,17 @@ import { PassportModule } from '@nestjs/passport';
 
     TypeOrmModule.forRootAsync(databaseConfig),
 
+    CacheModule.registerAsync(redisConfig),
+
     AuthModule,
 
     UserModule,
+
+    InventoryModule,
+
+    RmqModule.register({ name: BOT }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, RmqService],
 })
 export class AppModule {}

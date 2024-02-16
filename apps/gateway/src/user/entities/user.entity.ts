@@ -1,7 +1,9 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { BaseEntity } from '@ggcsgo/entities';
+
+import { TradeOffer } from '../../inventory/entities/trade-offers';
 
 @Entity()
 export class User extends BaseEntity {
@@ -47,4 +49,7 @@ export class User extends BaseEntity {
   })
   @Column({ name: 'profile_photo' })
   profilePhoto: string;
+
+  @OneToMany(() => TradeOffer, (tradeOffer) => tradeOffer.user)
+  tradeOffers: TradeOffer[];
 }

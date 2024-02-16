@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
-import { BotController } from './bot.controller';
-import { BotService } from './bot.service';
 import { ConfigModule } from '@nestjs/config';
+
+import { RmqModule, RmqService } from '@ggcsgo/rabbitmq';
 import { getBotConfig } from '@ggcsgo/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { databaseConfig } from './config/database';
+
+import { BotController } from './bot.controller';
+import { BOT } from '@ggcsgo/rabbitmq/queues';
+import { BotService } from './bot.service';
 
 @Module({
   imports: [
@@ -14,9 +16,11 @@ import { databaseConfig } from './config/database';
       load: [getBotConfig],
     }),
 
-    TypeOrmModule.forRootAsync(databaseConfig),
+    RmqModule.register({
+      name: BOT,
+    }),
   ],
   controllers: [BotController],
-  providers: [BotService],
+  providers: [RmqService, BotService],
 })
 export class BotModule {}

@@ -13,6 +13,7 @@ export default class TypeOrmConfig {
       database: configService.get<string>('database.database'),
       entities: [User],
       ssl: configService.get<boolean>('database.ssl'),
+      autoLoadEntities: true,
       synchronize: true,
     };
   }
