@@ -4,8 +4,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 
 import { RmqService } from './rabbitmq.service';
 
-import { BOT } from '../queues';
-
 interface RmqModuleOptions {
   name: string;
 }
@@ -26,7 +24,7 @@ export class RmqModule {
               transport: Transport.RMQ,
               options: {
                 urls: [configService.get<string>('rabbitmq.URI')],
-                queue: BOT,
+                queue: name,
               },
             }),
             inject: [ConfigService],

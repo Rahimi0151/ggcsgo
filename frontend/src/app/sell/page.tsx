@@ -16,7 +16,7 @@ const InventoryPage: React.FC = () => {
   const [addedItems, setAddedItems] = useState<Item[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost/api/inventory/', { credentials: 'include' })
+    fetch('http://192.168.1.59/api/inventory/', { credentials: 'include' })
       .then((response) => response.json())
       .then((data) => setItems(data));
   }, []);

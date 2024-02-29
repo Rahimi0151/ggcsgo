@@ -25,7 +25,7 @@ export class AuthController {
   @ApiBearerAuth()
   steamAuthRedirect(@Req() req: RequestWithJWT, @Res({ passthrough: true }) res: Response) {
     res.cookie('jwt', req.user.jwt, { httpOnly: true });
-    res.redirect(`http://localhost/`);
+    res.redirect(`http://192.168.1.59/`);
   }
 
   @Get('logout')
@@ -34,6 +34,6 @@ export class AuthController {
   })
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('jwt');
-    res.redirect(`http://localhost/`);
+    res.redirect(`http://192.168.1.59/`);
   }
 }

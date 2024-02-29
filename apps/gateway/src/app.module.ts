@@ -42,6 +42,6 @@ import { BOT } from '@ggcsgo/rabbitmq/queues';
     RmqModule.register({ name: BOT }),
   ],
   controllers: [AppController],
-  providers: [AppService, RmqService],
+  providers: [RmqService, AppService],
 })
 export class AppModule {}

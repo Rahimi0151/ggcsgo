@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntity } from '@ggcsgo/entities';
 
 import { TradeOffer } from '../../inventory/entities/trade-offers';
+import { Item } from '../../inventory/entities/item.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -52,4 +53,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => TradeOffer, (tradeOffer) => tradeOffer.user)
   tradeOffers: TradeOffer[];
+
+  @OneToMany(() => Item, (item) => item.owner)
+  items: Item[];
 }

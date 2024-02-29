@@ -20,9 +20,4 @@ export class InventoryController {
   async addInventory(@UserID() userID: string, @Body() itemsIDs: string[]) {
     return this.inventoryService.sendSellRequest(userID, itemsIDs);
   }
-
-  // @EventPattern(TRADE_OFFER_CHANGED)
-  // async updatePendingTrades(@Payload() data: any) {
-  //   return this.inventoryService.updatePendingTrades(data.doneTradeID);
-  // }
 }

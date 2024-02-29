@@ -9,6 +9,7 @@ import { TradeOffer } from './entities/trade-offers';
 
 import { InventoryController } from './inventory.controller';
 import { InventoryService } from './inventory.service';
+import { Item } from './entities/item.entity';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { InventoryService } from './inventory.service';
       name: BOT,
     }),
 
-    TypeOrmModule.forFeature([User, TradeOffer]),
+    TypeOrmModule.forFeature([User, TradeOffer, Item]),
   ],
   providers: [InventoryService],
   controllers: [InventoryController],

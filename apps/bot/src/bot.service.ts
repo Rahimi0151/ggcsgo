@@ -3,7 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { BOT, TRADE_OFFER_CHANGED } from '@ggcsgo/rabbitmq/queues';
-import { Cases, caseNames } from '@ggcsgo/types/types';
+import { Cases, TradeOfferEnum, caseNames } from '@ggcsgo/types/types';
 
 import * as fs from 'fs';
 import * as SteamUser from 'steam-user';
@@ -23,8 +23,6 @@ export class BotService {
     private configService: ConfigService,
     @Inject(BOT) private botClient: ClientProxy,
   ) {
-    if (!this.configService.get('steam.active')) return;
-
     this.steamUser = new SteamUser();
     this.community = new SteamCommunity();
 
@@ -35,16 +33,15 @@ export class BotService {
       pollInterval: 10000,
     });
 
-    const savedSession = this.loadSession();
-    if (!savedSession) this.loginToSteam();
-    else {
-      this.community.setCookies(savedSession);
-      this.tradeOfferManager.setCookies(savedSession);
+    if (this.configService.get('env') === 'development') {
+      const savedSession = this.loadSession();
+      if (!savedSession) this.loginToSteam();
+      else {
+        this.community.setCookies(savedSession);
+        this.tradeOfferManager.setCookies(savedSession);
+      }
     }
-
-    this.tradeOfferManager.on('sentOfferChanged', (offer) => {
-      this.botClient.send(TRADE_OFFER_CHANGED, offer);
-    });
+    console.log('Bot is ready');
   }
 
   /**
@@ -74,46 +71,115 @@ export class BotService {
     });
   }
 
-  /**
-   * TODO: Add description
-   * Sends trade offer to user.
-   * @param data - data to send trade offer
-   * @param data.userID - user steamID
-   * @param data.itemsIDs - items to send to user
-   * @param data.itemsIDs.items - array of items to send to user
-   * @param data.itemsIDs.items[].assetid - assetid of the item
-   * @returns void
-   *
-   */
-  buyItemFromUser(data: any) {
+  // /**
+  //  * TODO: Add description
+  //  * Sends trade offer to user.
+  //  * @param data - data to send trade offer
+  //  * @param data.userID - user steamID
+  //  * @param data.itemsIDs - items to send to user
+  //  * @param data.itemsIDs.items - array of items to send to user
+  //  * @param data.itemsIDs.items[].assetid - assetid of the item
+  //  * @returns void
+  //  *
+  //  */
+  // buyItemFromUser(data: any) {
+  //   return new Promise((resolve, reject) => {
+  //     const { userID } = data;
+  //     const offer = this.tradeOfferManager.createOffer(userID);
+
+  //     this.tradeOfferManager.getUserInventoryContents(userID, 730, 2, true, (err, inventory) => {
+  //       if (err) console.log(err);
+
+  //       for (const item of inventory)
+  //         if (data.itemsIDs.items.includes(item.assetid)) offer.addTheirItem(item);
+
+  //       offer.setMessage('Trade offer from ggcsgo.com');
+  //       offer.send((err, status) => {
+  //         if (err) return console.log(err);
+  //         if (status === 'pending') return console.log('Trade offer sent');
+  //       });
+  //     });
+
+  //     setTimeout(() => {
+  //       if (!offer.id) reject('Error sending trade offer');
+
+  //       this.tradeOfferManager.on('sentOfferChanged', (changedOffer) => {
+  //         if (changedOffer.id !== offer.id) return;
+  //         if (changedOffer.state === TradeOfferManager.ETradeOfferState.Declined)
+  //           resolve({ status: changedOffer.state, message: 'offer declined', data: {} });
+  //         if (changedOffer.state === TradeOfferManager.ETradeOfferState.Accepted)
+  //           resolve({ status: changedOffer.state, message: 'offer accepted', data: changedOffer });
+  //       });
+  //     }, 2000);
+  //   });
+  // }
+
+  // sellItemToUser(data: any) {
+  //   return new Promise((resolve, reject) => {
+  //     const offer = this.tradeOfferManager.createOffer(data.userID);
+
+  //     this.tradeOfferManager.getInventoryContents(730, 2, true, (err, inventory) => {
+  //       if (err) console.log(err);
+
+  //       for (const item of inventory)
+  //         if (data.itemsIDs.items.includes(item.assetid)) offer.addMyItem(item);
+
+  //       offer.setMessage('Trade offer from ggcsgo.com');
+  //       offer.send((err, status) => {
+  //         if (err) return console.log(err);
+  //         if (status === 'pending') return console.log('Trade offer sent');
+  //       });
+  //     });
+  //     setTimeout(() => {
+  //       if (!offer.id) reject('Error sending trade offer');
+
+  //       this.tradeOfferManager.on('sentOfferChanged', (changedOffer) => {
+  //         if (changedOffer.id !== offer.id) return;
+
+  //         console.log(changedOffer.state);
+
+  //         if (changedOffer.state === TradeOfferManager.ETradeOfferState.Declined)
+  //           resolve({ status: changedOffer.state, message: 'Trade offer declined', data: {} });
+  //         if (changedOffer.state === TradeOfferManager.ETradeOfferState.Accepted)
+  //           resolve({ status: changedOffer.state, message: 'offer accepted', data: changedOffer });
+  //       });
+  //     }, 2000);
+  //   });
+  // }
+
+  sendTradeOffer(data: any, type: TradeOfferEnum) {
     return new Promise((resolve, reject) => {
-      const offer = this.tradeOfferManager.createOffer(data.userID);
+      const fromUser =
+        type == TradeOfferEnum.SELL ? data.userID : this.steamUser.steamID.getSteamID64();
+      const toUser =
+        type == TradeOfferEnum.SELL ? this.steamUser.steamID.getSteamID64() : data.userID;
+      const offer = this.tradeOfferManager.createOffer(toUser);
+      const addItem = type == TradeOfferEnum.SELL ? offer.addTheirItem : offer.addMyItem;
 
-      this.tradeOfferManager.getUserInventoryContents(
-        data.userID,
-        730,
-        2,
-        true,
-        (err, inventory) => {
-          if (err) console.log(err);
+      this.tradeOfferManager.getUserInventoryContents(fromUser, 730, 2, true, (err, inventory) => {
+        if (err) console.log(err);
 
-          for (const item of inventory) {
-            if (data.itemsIDs.items.includes(item.assetid) && item.tradable) {
-              offer.addTheirItem(item);
-            }
-          }
+        for (const item of inventory) if (data.itemsIDs.items.includes(item.assetid)) addItem(item);
 
-          offer.setMessage('Trade offer from ggcsgo.com');
-
-          offer.send((err, status) => {
-            if (err) return console.log(err);
-            if (status === 'pending') return console.log('Trade offer sent');
-          });
-        },
-      );
+        offer.setMessage('Trade offer from ggcsgo.com');
+        offer.send((err, status) => {
+          if (err) return console.log(err);
+          if (status === 'pending') return console.log('Trade offer sent');
+        });
+      });
       setTimeout(() => {
-        if (offer.id) resolve(offer.id);
-        else reject('Error sending trade offer');
+        if (!offer.id) reject('Error sending trade offer');
+
+        this.tradeOfferManager.on('sentOfferChanged', (changedOffer) => {
+          if (changedOffer.id !== offer.id) return;
+
+          console.log(changedOffer.state);
+
+          if (changedOffer.state === TradeOfferManager.ETradeOfferState.Declined)
+            resolve({ status: changedOffer.state, message: 'Trade offer declined', data: {} });
+          if (changedOffer.state === TradeOfferManager.ETradeOfferState.Accepted)
+            resolve({ status: changedOffer.state, message: 'offer accepted', data: changedOffer });
+        });
       }, 2000);
     });
   }

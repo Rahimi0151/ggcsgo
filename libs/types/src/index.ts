@@ -44,3 +44,8 @@ export enum Cases {
 }
 
 export const caseNames = Object.values(Cases) as Cases[];
+
+export enum TradeOfferEnum {
+  SELL = 'sell-to-website',
+  BUY = 'buy-from-website',
+}

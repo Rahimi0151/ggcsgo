@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { RmqModule, RmqService } from '@ggcsgo/rabbitmq';
 import { getBotConfig } from '@ggcsgo/config';
+import { BOT } from '@ggcsgo/rabbitmq/queues';
+import { RmqModule, RmqService } from '@ggcsgo/rabbitmq';
+
+import { BotService } from './bot.service';
 
 import { BotController } from './bot.controller';
-import { BOT } from '@ggcsgo/rabbitmq/queues';
-import { BotService } from './bot.service';
 
 @Module({
   imports: [
@@ -15,10 +16,7 @@ import { BotService } from './bot.service';
       isGlobal: true,
       load: [getBotConfig],
     }),
-
-    RmqModule.register({
-      name: BOT,
-    }),
+    RmqModule.register({ name: BOT }),
   ],
   controllers: [BotController],
   providers: [RmqService, BotService],
