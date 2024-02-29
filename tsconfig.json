@@ -18,8 +18,10 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
+      "@ggcsgo/types": ["libs/types/src/index.ts"],
       "@ggcsgo/config": ["libs/config/src/index.ts"],
       "@ggcsgo/entities": ["libs/entity/src/index.ts"],
+      "@ggcsgo/rabbitmq": ["libs/rabbitmq/src/index.ts"],
       "@ggcsgo/decorators": ["libs/decorators/src/index.ts"],
     },
   },

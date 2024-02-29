@@ -91,7 +91,9 @@
       "^@ggcsgo/proto/proto(|/.*)$": "<rootDir>/libs/proto/src/$1",
       "^@ggcsgo/config/config(|/.*)$": "<rootDir>/libs/config/src/$1",
       "^@ggcsgo/entities/entity(|/.*)$": "<rootDir>/libs/entity/src/$1",
-      "^@ggcsgo/decorators/decorators(|/.*)$": "<rootDir>/libs/decorators/src/$1"
+      "^@ggcsgo/decorators/decorators(|/.*)$": "<rootDir>/libs/decorators/src/$1",
+      "^@ggcsgo/rabbitmq/rabbitmq(|/.*)$": "<rootDir>/libs/rabbitmq/src/$1",
+      "^@ggcsgo/types/types(|/.*)$": "<rootDir>/libs/types/src/$1"
     }
   }
 }

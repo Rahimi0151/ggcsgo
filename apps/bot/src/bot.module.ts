@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
-import { BotController } from './bot.controller';
-import { BotService } from './bot.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+
+import { BOT } from '@ggcsgo/rabbitmq';
 import { getBotConfig } from '@ggcsgo/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { databaseConfig } from './config/database';
+
+import { BotService } from './bot.service';
+
+import { BotController } from './bot.controller';
 
 @Module({
   imports: [
@@ -14,7 +17,21 @@ import { databaseConfig } from './config/database';
       load: [getBotConfig],
     }),
 
-    TypeOrmModule.forRootAsync(databaseConfig),
+    ClientsModule.registerAsync([
+      {
+        name: BOT,
+        imports: [ConfigModule],
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.get<string>('rabbitmq.URI')],
+            queue: BOT,
+            queueOptions: { durable: false },
+          },
+        }),
+        inject: [ConfigService],
+      },
+    ]),
   ],
   controllers: [BotController],
   providers: [BotService],
