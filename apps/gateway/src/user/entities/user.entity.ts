@@ -1,7 +1,10 @@
-import { Entity, Column } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { BaseEntity } from '@ggcsgo/entities';
+
+import { Entity, Column, OneToMany } from 'typeorm';
+
+import { Item } from '../../inventory/entities/item.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -47,4 +50,7 @@ export class User extends BaseEntity {
   })
   @Column({ name: 'profile_photo' })
   profilePhoto: string;
+
+  @OneToMany(() => Item, (item) => item.owner)
+  items: Item[];
 }
