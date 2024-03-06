@@ -1,6 +1,7 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
+import { Item } from '../inventory/entities/item.entity';
 
 export default class TypeOrmConfig {
   static getOrmConfig(configService: ConfigService): TypeOrmModuleOptions {
@@ -11,7 +12,7 @@ export default class TypeOrmConfig {
       username: configService.get<string>('database.username'),
       password: configService.get<string>('database.password'),
       database: configService.get<string>('database.database'),
-      entities: [User],
+      entities: [User, Item],
       ssl: configService.get<boolean>('database.ssl'),
       synchronize: true,
     };
