@@ -13,8 +13,8 @@ export class SteamStrategy extends PassportStrategy(Strategy, 'steam') {
     private readonly configService: ConfigService,
   ) {
     super({
-      returnURL: 'http://localhost:4000/auth/steam-return',
-      realm: 'http://localhost:4000/',
+      returnURL: 'https://ggcsgo.rahimi0151.ir/api/auth/steam-return',
+      realm: 'https://ggcsgo.rahimi0151.ir/',
       apiKey: configService.get<string>('steam.apiKey'),
     });
   }

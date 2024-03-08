@@ -38,6 +38,9 @@ dependencies:
   amqplib:
     specifier: ^0.10.3
     version: 0.10.3
+  axios:
+    specifier: ^1.6.7
+    version: 1.6.7
   cookie-parser:
     specifier: ^1.4.6
     version: 1.4.6

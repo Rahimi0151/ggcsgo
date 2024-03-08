@@ -9,6 +9,8 @@ async function bootstrap() {
   app.enableCors({ origin: ['http://localhost', 'https://steamcommunity.com'] });
   const configService = app.get(ConfigService);
 
+  app.setGlobalPrefix('api');
+
   const port = configService.get('port');
   if (!port) throw new Error('Port not found in config');
 

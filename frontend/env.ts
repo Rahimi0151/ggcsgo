@@ -1,6 +1,6 @@
 const env = {
-  baseUrl: 'http://localhost:3000',
-  apiUrl: 'http://localhost:4000',
+  baseUrl: 'https://ggcsgo.rahimi0151.ir/',
+  apiUrl: 'https://ggcsgo.rahimi0151.ir/api',
 };
 
 export default env;

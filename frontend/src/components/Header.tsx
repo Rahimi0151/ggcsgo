@@ -8,7 +8,7 @@ export default function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost/api/user/profile', {
+    fetch('https://ggcsgo.rahimi0151.ir/api/user/profile', {
       method: 'GET',
       credentials: 'include',
     })
@@ -18,7 +18,7 @@ export default function Header() {
   }, []);
 
   const logout = () => {
-    fetch('http://localhost/api/auth/logout').then((response) => {
+    fetch('https://ggcsgo.rahimi0151.ir/api/auth/logout').then((response) => {
       if (response.status === 200) setIsAuthenticated(false);
     });
   };
