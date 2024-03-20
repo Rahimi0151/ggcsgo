@@ -12,6 +12,7 @@ import * as TradeOfferManager from 'steam-tradeoffer-manager';
 
 import { Item } from './entities/item.entity';
 import { User } from '../user/entities/user.entity';
+import { Recept } from './entities/recept.entity';
 
 @Injectable()
 export class InventoryService {
@@ -19,6 +20,7 @@ export class InventoryService {
     @Inject(BOT) private botClient: ClientProxy,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Item) private itemRepository: Repository<Item>,
+    @InjectRepository(Recept) private receptRepository: Repository<Recept>,
   ) {}
 
   async showInventory(steamID: string) {
@@ -54,5 +56,69 @@ export class InventoryService {
       });
     }
     return { message: 'Trade request sent', tradeID: trade };
+  }
+
+  /**
+   * This method is used to buy items from the marketplace
+   * @param userID - The user's steamID
+   * @param itemsIDs - The items to buy
+   */
+  async buyItem(userID: string, itemsIDs: string[]) {
+    try {
+      await this.itemRepository.manager.transaction(async (transactionalEntityManager) => {
+        const buyer = await transactionalEntityManager.findOne(User, {
+          where: { steamId: userID },
+        });
+
+        for (const itemID of itemsIDs) {
+          const item = await transactionalEntityManager.findOne(Item, { where: { id: +itemID } });
+
+          // any error will rollback the transaction automatically
+          if (!item.listed) throw new Error('Item is not listed for sale');
+          if (buyer.balance < item.price) throw new Error('Not enough balance');
+
+          item.owner.balance += item.price;
+          buyer.balance -= item.price;
+          item.owner = buyer;
+
+          const recept = this.receptRepository.create({ user: buyer, item, price: item.price });
+          await transactionalEntityManager.save(recept);
+
+          await transactionalEntityManager.save(item);
+        }
+
+        await transactionalEntityManager.save(buyer);
+      });
+    } catch (e) {
+      return (e as Error).message;
+    }
+  }
+
+  /**
+   * This method is used to toggle the privacy of a listing
+   * @param userID - The user's steamID
+   * @param itemID - The item to update
+   * @returns - A message indicating the status of the operation
+   * @throws - An error if the item is not found or the user is not the owner
+   */
+  async toggleListingPrivacy(userID: string, itemID: string) {
+    const item = await this.itemRepository.findOne({
+      where: { id: +itemID },
+      relations: ['owner'],
+    });
+
+    if (!item) throw new Error('Item not found');
+    if (item.owner.steamId !== userID) throw new Error('You are not the owner of this item');
+
+    item.listed = !item.listed;
+    await this.itemRepository.save(item);
+
+    return { message: 'Item updated' };
+  }
+
+  async updateItem(userID: string, items: Item[]) {
+    items.forEach(async (item: Item) => {
+      await this.itemRepository.update({ id: item.id }, { ...item });
+    });
   }
 }

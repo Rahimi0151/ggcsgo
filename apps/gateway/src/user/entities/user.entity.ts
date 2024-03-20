@@ -6,6 +6,7 @@ import { Entity, Column, OneToMany } from 'typeorm';
 
 import { Item } from '../../inventory/entities/item.entity';
 import { Payment } from '../../zarinpal/entities/payment.entity';
+import { Recept } from '../../inventory/entities/recept.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -57,4 +58,14 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Payment, (payment) => payment.user)
   payments: Payment[];
+
+  @ApiProperty({
+    description: 'The balance of the user.',
+    example: 0,
+  })
+  @Column({ default: 0 })
+  balance: number;
+
+  @OneToMany(() => Recept, (recept) => recept.user)
+  recepts: Recept[];
 }

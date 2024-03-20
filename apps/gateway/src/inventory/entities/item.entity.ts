@@ -2,9 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { BaseEntity } from '@ggcsgo/entities';
 
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 
 import { User } from '../../user/entities/user.entity';
+import { Recept } from './recept.entity';
 
 const sevenDaysInFuture = new Date();
 sevenDaysInFuture.setDate(sevenDaysInFuture.getDate() + 7);
@@ -119,4 +120,15 @@ export class Item extends BaseEntity {
   @ManyToOne(() => User, (user) => user.items)
   @JoinColumn({ name: 'owner_id' })
   owner: User;
+
+  @ApiProperty({ description: 'The price of the item', example: 100 })
+  @Column({ nullable: false })
+  price: number;
+
+  @ApiProperty({ description: 'Is the item listed for sale?', example: false })
+  @Column({ nullable: false, default: false })
+  listed: boolean;
+
+  @OneToMany(() => Recept, (recept) => recept.item)
+  recepts: Recept[];
 }
