@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import env from '../../env';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetch('https://ggcsgo.rahimi0151.ir/api/user/profile', {
@@ -23,6 +25,10 @@ export default function Header() {
     });
   };
 
+  const sell = () => {
+    router.push('/sell');
+  };
+
   return (
     <header className="bg-purple-950 text-white p-4">
       <nav className="flex justify-between items-center">
@@ -35,12 +41,23 @@ export default function Header() {
           </Link>
         </div>
         {isAuthenticated ? (
-          <button
-            className="bg-red-900 hover:bg-red-950 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105"
-            onClick={logout}
-          >
-            Logout
-          </button>
+          <Fragment>
+            <div className="flex">
+              <button
+                className="bg-purple-900 hover:bg-purple-950 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105 ml-4"
+                onClick={sell}
+              >
+                Sell Youur Skins
+              </button>
+
+              <button
+                className="bg-red-900 hover:bg-red-950 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105 ml-4"
+                onClick={logout}
+              >
+                Logout
+              </button>
+            </div>
+          </Fragment>
         ) : (
           <button
             className="bg-blue-900 hover:bg-blue-950 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105"
