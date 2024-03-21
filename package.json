@@ -49,7 +49,6 @@
     "steam-user": "^5.0.8",
     "steamcommunity": "^3.48.2",
     "typeorm": "^0.3.20",
-    "typeorm-seeding": "^1.6.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

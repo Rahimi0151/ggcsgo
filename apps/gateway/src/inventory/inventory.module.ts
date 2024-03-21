@@ -6,6 +6,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { BOT } from '@ggcsgo/rabbitmq';
 
 import { Item } from './entities/item.entity';
+import { Recept } from './entities/recept.entity';
 import { User } from '../user/entities/user.entity';
 
 import { InventoryService } from './inventory.service';
@@ -16,7 +17,7 @@ import { InventoryController } from './inventory.controller';
   imports: [
     ConfigModule,
 
-    TypeOrmModule.forFeature([User, Item]),
+    TypeOrmModule.forFeature([User, Item, Recept]),
 
     ClientsModule.registerAsync([
       {
