@@ -1,17 +1,25 @@
 import { NestFactory } from '@nestjs/core';
-import { BotModule } from './bot.module';
 import { ConfigService } from '@nestjs/config';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+
+import { BOT } from '@ggcsgo/rabbitmq';
+
+import { BotModule } from './bot.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(BotModule);
+  const app = await NestFactory.createApplicationContext(BotModule);
 
-  const configService = app.get(ConfigService);
+  const rabbitMqURI = app.get(ConfigService).get<string>('rabbitmq.URI');
 
-  const port = configService.get('port');
-  if (!port) throw new Error('Port not found in config');
-
-  await app.listen(port, () => {
-    console.log(`Bot listening on port ${port}`);
+  const service = await NestFactory.createMicroservice<MicroserviceOptions>(BotModule, {
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbitMqURI],
+      queue: BOT,
+      queueOptions: { durable: false },
+    },
   });
+
+  await service.listen();
 }
 bootstrap();
