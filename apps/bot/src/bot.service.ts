@@ -37,8 +37,8 @@ export class BotService {
       const savedSession = this.loadSession();
       if (!savedSession) this.loginToSteam();
       else {
-        this.community.setCookies(savedSession);
         this.tradeOfferManager.setCookies(savedSession);
+        this.community.setCookies(savedSession);
       }
     }
     console.log('Bot is ready');
@@ -80,18 +80,20 @@ export class BotService {
    * @returns a Promise which should be returned to the rabbitmq queue as is.
    */
   sendTradeOffer(data: any, type: TradeOfferEnum) {
-    return new Promise((resolve, reject) => {
-      const fromUser =
-        type == TradeOfferEnum.SELL ? data.userID : this.steamUser.steamID.getSteamID64();
-      const toUser =
-        type == TradeOfferEnum.SELL ? this.steamUser.steamID.getSteamID64() : data.userID;
-      const offer = this.tradeOfferManager.createOffer(toUser);
-      const addItem = type == TradeOfferEnum.SELL ? offer.addTheirItem : offer.addMyItem;
+    if (type === TradeOfferEnum.SELL) return this.buyItemFromUser(data);
+    if (type === TradeOfferEnum.BUY) return this.sellItemToUser(data);
+  }
 
-      this.tradeOfferManager.getUserInventoryContents(fromUser, 730, 2, true, (err, inventory) => {
+  private buyItemFromUser(data: any) {
+    return new Promise((resolve, reject) => {
+      const { userID } = data;
+      const offer = this.tradeOfferManager.createOffer(userID);
+
+      this.tradeOfferManager.getUserInventoryContents(userID, 730, 2, true, (err, inventory) => {
         if (err) console.log(err);
 
-        for (const item of inventory) if (data.itemsIDs.items.includes(item.assetid)) addItem(item);
+        for (const item of inventory)
+          if (data.itemsIDs.includes(item.assetid)) offer.addTheirItem(item);
 
         offer.setMessage('Trade offer from ggcsgo.com');
         offer.send((err, status) => {
@@ -100,7 +102,36 @@ export class BotService {
         });
       });
 
-      //don't ask me why I used setTimeout, I don't know either XD
+      setTimeout(() => {
+        if (!offer.id) reject('Error sending trade offer');
+
+        this.tradeOfferManager.on(TRADE_OFFER_CHANGED, (changedOffer) => {
+          if (changedOffer.id !== offer.id) return;
+          if (changedOffer.state === TradeOfferManager.ETradeOfferState.Declined)
+            resolve({ status: changedOffer.state, message: 'offer declined', data: {} });
+          if (changedOffer.state === TradeOfferManager.ETradeOfferState.Accepted)
+            resolve({ status: changedOffer.state, message: 'offer accepted', data: changedOffer });
+        });
+      }, 2000);
+    });
+  }
+
+  private sellItemToUser(data: any) {
+    return new Promise((resolve, reject) => {
+      const offer = this.tradeOfferManager.createOffer(data.userID);
+
+      this.tradeOfferManager.getInventoryContents(730, 2, true, (err, inventory) => {
+        if (err) console.log(err);
+
+        for (const item of inventory)
+          if (data.itemsIDs.includes(item.assetid)) offer.addMyItem(item);
+
+        offer.setMessage('Trade offer from ggcsgo.com');
+        offer.send((err, status) => {
+          if (err) return console.log(err);
+          if (status === 'pending') return console.log('Trade offer sent');
+        });
+      });
       setTimeout(() => {
         if (!offer.id) reject('Error sending trade offer');
 
